@@ -29,8 +29,10 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * @param {string} path - API endpoint, ie. relative path
-	 * @param {object} [params] - Parameters to pass in a query string
+	 * Async fetch wrapper that rejects on API error or timeout
+	 * @param {String} path - API endpoint, ie. relative path
+	 * @param {Object} [params] - Extra parameters to pass in a query string
+	 * @returns {Promise} Resolves on fetch completion
 	 */
 	query(path, params) {
 		const url = `${this.apiHost}/${path}?${qs.stringify(Object.assign(this.queryOptions, params))}`;
@@ -51,19 +53,23 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * @param {integer} id - Achievement id
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
+	 * Retrieves achievement information by id
+	 * @param {Number} id
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
 	 */
 	achievement(id, queryParams = {}) {
 		return this.query(`achievement/${id}`, queryParams);
 	}
 
 	/**
-	 * Two requests are performed.
-	 * First, to retrieve the JSON path to cached data
-	 * Second, to retrieve the specified JSON
-	 * @param {string} realm - Realm slug
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
+	 * Retrieves recent auction data by realm
+	 * Two requests are performed:
+	 * 1. retrieve JSON path to cached data
+	 * 2. retrieve specified JSON
+	 * @param {String} realm - Realm slug
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
 	 */
 	auction(realm, queryParams = {}) {
 		const fetchOptions = this.fetchOptions;
@@ -98,87 +104,225 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * If extra query params are desired for full boss data,
-	 * a falsy value must be passed for the first parameter
-	 * @param {integer} [id] - Boss id number or null for all boss data
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
+	 * Retrieves encounter information by id or a list of all encounters if id is falsy
+	 * If extra query params are desired for full boss data, id must be falsy
+	 * @param {Number} [id] - Boss id number or null for all boss data
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
 	 */
 	boss(id = null, queryParams = {}) {
 		return this.query(`boss/${id || ''}`, queryParams);
 	}
 
 	/**
-	 * @param {string} realm - Realm slug or "region" for overall data
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
+	 * Retrieves current medal times for each map in specified realm
+	 * @param {String} realm - Realm slug or "region" for top results in the region
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
 	 */
 	challenge(realm, queryParams = {}) {
 		return this.query(`challenge/${realm}`, queryParams);
 	}
 
 	/**
-	 * @param {string} realm - Realm on which the character is located
-	 * @param {string} charName - Character name
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
-	 * @property {array} queryParams.fields - Array containing any of the following endpoints:
+	 * Retrieve character information by name located on specified realm
+	 * Fields must be passed in query param to receive information
+	 * @param {String} realm
+	 * @param {String} charName
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @property {Array} queryParams.fields - Array containing any of the following endpoints:
 	 *   achievements, appearance, feed, guild, hunterPets,
 	 *   items, mounts, pets, petSlots, professions, progression,
 	 *   pvp, quests, reputation, statistics, stats, talents,
 	 *   titles, audit
+	 * @returns {Promise}
 	 */
-	character(realm, charName, queryParams = {}) {}
+	character(realm, charName, queryParams = {}) {
+		return this.query(`character/${realm}/${charName}`, queryParams);
+	}
 
 	/**
-	 * @param {string} realm - Realm on which the guild is located
-	 * @param {string} guildName - Guild name
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
-	 * @property {array} queryParams.fields - Array containing any of the following endpoints:
+	 * Retrieve guild information by name located on specified realm
+	 * Fields must be passed in query param to receive information
+	 * @param {String} realm
+	 * @param {String} guildName
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @property {Array} queryParams.fields - Array containing any of the following endpoints:
 	 *   members, achievements, news, challenge
+	 * @returns {Promise}
 	 */
-	guild(realm, guildName, queryParams = {}) {}
+	guild(realm, guildName, queryParams = {}) {
+		return this.query(`guild/${realm}/${guildName}`, queryParams);
+	}
 
 	/**
-	 * @param {integer} id - Item id
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
+	 * @param {Number} id - Item id
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
 	 */
-	item(id, queryParams = {}) {}
+	item(id, queryParams = {}) {
+		return this.query(`item/${id}`, queryParams);
+	}
 
 	/**
-	 * @param {integer} id - Item set id
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
+	 * @param {Number} id - Item set id
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
 	 */
-	itemSet(id, queryParams = {}) {}
+	itemSet(id, queryParams = {}) {
+		return this.query(`item/set/${id}`, queryParams);
+	}
 
 	/**
 	 * All supported mounts
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
 	 */
-	mount(queryParams = {}) {}
+	mount(queryParams = {}) {
+		return this.query('mount/', queryParams);
+	}
 
 	/**
-	 * @param {integer} id - Pet id
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
+	 * @param {Number} id - Pet id
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
 	 */
-	pet(id, queryParams = {}) {}
+	pet(queryParams = {}) {
+		return this.query('pet/', queryParams);
+	}
 
 	/**
-	 * @param {integer} id - Pet ability id
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
+	 * @param {Number} id - Pet ability id
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
 	 */
-	petAbilities(id, queryParams = {}) {}
+	petAbility(id, queryParams = {}) {
+		return this.query(`pet/ability/${id}`, queryParams);
+	}
 
 	/**
 	 * Pet species information
-	 * @param {integer} id - Pet species id
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
+	 * @param {Number} id - Pet species id
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
 	 */
-	petSpecies(id, queryParams = {}) {}
+	petSpecies(id, queryParams = {}) {
+		return this.query(`pet/species/${id}`, queryParams);
+	}
 
 	/**
 	 * Pet stats for specified species id
-	 * @param {integer} id - Pet species id
-	 * @param {object} [queryParams] - Additional parameters to pass in a query string
+	 * @param {Number} id - Pet species id
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
 	 */
-	petStats(id, queryParams = {}) {}
+	petStats(id, queryParams = {}) {
+		return this.query(`pet/stats/${id}`, queryParams);
+	}
+
+	/**
+	 * Leaderboard for specified bracket
+	 * @param {String} bracket - Bracket short name. One of: 2v2, 3v3, 5v5, rbg
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
+	 */
+	pvp(bracket, queryParams = {}) {
+		return this.query(`leaderboard/${bracket}`, queryParams);
+	}
+
+	/**
+	 * Quest information for specified quest id
+	 * @param {Number} id - Quest id
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
+	 */
+	quest(id, queryParams = {}) {
+		return this.query(`quest/${id}`, queryParams);
+	}
+
+	/**
+	 * Realm status
+	 * Pass a string or array of strings for the first parameter to filter realm status
+	 * Or a falsy value to retrieve all realm statuses
+	 * A value must be passed for this first parameter if additional query parameters are used
+	 * @param {String} [realms] - Realm slugs
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
+	 */
+	realm(realms = null, queryParams = {}) {
+		return this.query('realm/status', Object.assign(
+			realms && realms.constructor === 'string' ? { realms } : realms && realms.constructor === Array ? { realms: realms.join(',') } : {}, queryParams
+		));
+	}
+
+	/**
+	 * Recipe information for specified recipe id
+	 * @param {Number} id - Quest id
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
+	 */
+	recipe(id, queryParams = {}) {
+		return this.query(`recipe/${id}`, queryParams);
+	}
+
+	/**
+	 * Spell information for specified spell id
+	 * @param {Number} id - Spell id
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
+	 */
+	spell(id, queryParams = {}) {
+		return this.query(`spell/${id}`, queryParams);
+	}
+
+	/**
+	 * Zone information for specified zone id
+	 * Pass a falsy value to retrieve all zone information
+	 * A value must be passed for this first parameter if additional query parameters are used
+	 * @param {Number} [id] - Zone id
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
+	 */
+	zone(id = null, queryParams = {}) {
+		return this.query(`zone/${id || ''}`, queryParams);
+	}
+
+	/**
+	 * Data resources
+	 * Possible resource names are:
+	 * battlegroups, races, classes, achievements, rewards, perks, guildAchievements, itemClasses, talents, petTypes
+	 * @param {String} resource - Resource name
+	 * @param {Object} [queryParams] - Additional parameters to pass in query string
+	 * @returns {Promise}
+	 */
+	data(resource, queryParams = {}) {
+		return this.query(`data/${(() => {
+			switch (resource) {
+				case 'talents':
+					return resource;
+				case 'battlegroups':
+					return 'battlegroups/';
+				case 'races':
+					return 'character/races';
+				case 'classes':
+					return 'character/classes';
+				case 'achievements':
+					return 'character/achievements';
+				case 'rewards':
+					return 'guild/rewards';
+				case 'perks':
+					return 'guild/perks';
+				case 'guildAchievements':
+					return 'guild/achievements';
+				case 'itemClasses':
+					return 'item/classes';
+				case 'petTypes':
+					return 'pet/types';
+				default:
+					return '';
+			}
+		})()}`, queryParams);
+	}
 }
 
 export default WoWCommunityAPI;
