@@ -30,7 +30,7 @@ class WoWCommunityAPI {
 
 	/**
 	 * Async fetch wrapper that rejects on API error or timeout
-	 * @param {String} path - API endpoint, ie. relative path
+	 * @param {String} path - API endpoint (relative path)
 	 * @param {Object} [params] - Extra parameters to pass in a query string
 	 * @returns {Promise} Resolves on fetch completion
 	 */
@@ -63,11 +63,11 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * Retrieves recent auction data by realm
+	 * Retrieves recent auction data by realm slug
 	 * Two requests are performed:
 	 * 1. retrieve JSON path to cached data
 	 * 2. retrieve specified JSON
-	 * @param {String} realm - Realm slug
+	 * @param {String} realm
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -104,18 +104,18 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * Retrieves encounter information by id or a list of all encounters if id is falsy
-	 * If extra query params are desired for full boss data, id must be falsy
-	 * @param {Number} [id] - Boss id number or null for all boss data
+	 * Retrieves encounter information by id or a list of all encounters if id is not a number
+	 * An id must be passed if extra query params are desired
+	 * @param {Number} [id]
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
 	boss(id = null, queryParams = {}) {
-		return this.query(`boss/${id || ''}`, queryParams);
+		return this.query(`boss/${Number.isInteger(id) ? id : ''}`, queryParams);
 	}
 
 	/**
-	 * Retrieves current medal times for each map in specified realm
+	 * Retrieves current top times for each map in specified realm
 	 * @param {String} realm - Realm slug or "region" for top results in the region
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
@@ -156,7 +156,8 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * @param {Number} id - Item id
+	 * Retrieve item information by id
+	 * @param {Number} id
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -165,7 +166,8 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * @param {Number} id - Item set id
+	 * Retrieve item set information by set id
+	 * @param {Number} id
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -174,7 +176,7 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * All supported mounts
+	 * Retrieve a list of all supported mounts
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -183,7 +185,7 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * @param {Number} id - Pet id
+	 * Retrieve a list of all pets
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -192,7 +194,8 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * @param {Number} id - Pet ability id
+	 * Retrieve pet ability information by ability id
+	 * @param {Number} id
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -201,8 +204,8 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * Pet species information
-	 * @param {Number} id - Pet species id
+	 * Retrieve pet species information by species id
+	 * @param {Number} id
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -211,8 +214,8 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * Pet stats for specified species id
-	 * @param {Number} id - Pet species id
+	 * Retrieve pet stats by species id
+	 * @param {Number} id
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -221,7 +224,7 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * Leaderboard for specified bracket
+	 * Retrieve leaderboard for specified pvp bracket
 	 * @param {String} bracket - Bracket short name. One of: 2v2, 3v3, 5v5, rbg
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
@@ -231,8 +234,8 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * Quest information for specified quest id
-	 * @param {Number} id - Quest id
+	 * Retrieve quest information for specified quest id
+	 * @param {Number} id
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -241,11 +244,10 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * Realm status
+	 * Retrieve realm status for specified realms or all realms if a falsy value is passed
 	 * Pass a string or array of strings for the first parameter to filter realm status
-	 * Or a falsy value to retrieve all realm statuses
 	 * A value must be passed for this first parameter if additional query parameters are used
-	 * @param {String} [realms] - Realm slugs
+	 * @param {String|Array} [realms] - Realm slugs
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -256,8 +258,8 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * Recipe information for specified recipe id
-	 * @param {Number} id - Quest id
+	 * Retrieve recipe information for specified recipe id
+	 * @param {Number} id
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -266,8 +268,8 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * Spell information for specified spell id
-	 * @param {Number} id - Spell id
+	 * Retrieve spell information for specified spell id
+	 * @param {Number} id
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
@@ -276,22 +278,22 @@ class WoWCommunityAPI {
 	}
 
 	/**
-	 * Zone information for specified zone id
-	 * Pass a falsy value to retrieve all zone information
-	 * A value must be passed for this first parameter if additional query parameters are used
-	 * @param {Number} [id] - Zone id
+	 * Retrieve zone information for specified zone id or all zone information if id is falsy
+	 * A zone value must be passed if additional query parameters are used
+	 * @param {Number|null} [id]
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
 	zone(id = null, queryParams = {}) {
-		return this.query(`zone/${id || ''}`, queryParams);
+		return this.query(`zone/${Number.isInteger(id) ? id : ''}`, queryParams);
 	}
 
 	/**
-	 * Data resources
-	 * Possible resource names are:
-	 * battlegroups, races, classes, achievements, rewards, perks, guildAchievements, itemClasses, talents, petTypes
-	 * @param {String} resource - Resource name
+	 * Retrieve game data information for certain resources
+	 * Possible resource values are:
+	 *   battlegroups, races, classes, achievements, rewards, perks,
+	 *   guildAchievements, itemClasses, talents, petTypes
+	 * @param {String} resource
 	 * @param {Object} [queryParams] - Additional parameters to pass in query string
 	 * @returns {Promise}
 	 */
