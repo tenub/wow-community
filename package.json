@@ -2,8 +2,10 @@
   "name": "wow-community",
   "version": "1.0.0",
   "description": "World of Warcraft community API wrapper",
+  "main": "lib",
   "scripts": {
     "build": "babel src -d lib",
+    "prepublish": "npm run build",
     "test": "node -r dotenv/config -r babel-register test"
   },
   "author": "Joseph Chrzan",
