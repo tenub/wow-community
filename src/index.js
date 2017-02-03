@@ -10,22 +10,13 @@ fetch.Promise = Promise;
  * Simple World of Warcraft community API wrapper
  */
 class WoWCommunityAPI {
-	constructor({ apiKey, locale, region }) {
+	constructor({ apiKey }) {
 		if (!apiKey) {
 			throw new Error('API key not provided');
 		}
 
-		if (region && !/^(?:us|eu)$/.test(region)) {
-			throw new Error('Region must be "eu" or "us"');
-		}
-
-		if (locale && !/^(?:en_US|es_MX|pt_BR)$/) {
-			throw new Error('Locale must be "en_US", "es_MX", or "pt_BR"');
-		}
-
-		this.apiHost = `https://${region || 'us'}.api.battle.net/wow`;
 		this.fetchOptions = { timeout: 5000 };
-		this.queryOptions = { apikey: apiKey, locale: locale || 'en_US' };
+		this.queryOptions = { apikey: apiKey };
 	}
 
 	/**
@@ -35,7 +26,8 @@ class WoWCommunityAPI {
 	 * @returns {Promise} Resolves on fetch completion
 	 */
 	query(path, params) {
-		const url = `${this.apiHost}/${path}?${qs.stringify(Object.assign({}, this.queryOptions, params))}`;
+		const { region, ...queryParams } = params;
+		const url = `https://${region || 'us'}.api.battle.net/wow/${path}?${qs.stringify(Object.assign({}, this.queryOptions, queryParams))}`;
 		return new Promise((resolve, reject) => (
 			fetch(url, this.fetchOptions)
 				.bind({})
