@@ -35,7 +35,7 @@ class WoWCommunityAPI {
 	 * @returns {Promise} Resolves on fetch completion
 	 */
 	query(path, params) {
-		const url = `${this.apiHost}/${path}?${qs.stringify(Object.assign(this.queryOptions, params))}`;
+		const url = `${this.apiHost}/${path}?${qs.stringify(Object.assign({}, this.queryOptions, params))}`;
 		return new Promise((resolve, reject) => (
 			fetch(url, this.fetchOptions)
 				.bind({})

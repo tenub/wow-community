@@ -1,6 +1,6 @@
 {
   "name": "wow-community",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "World of Warcraft community API wrapper",
   "main": "lib",
   "scripts": {
