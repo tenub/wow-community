@@ -245,7 +245,7 @@ class WoWCommunityAPI {
 	 */
 	realm(realms = null, queryParams = {}) {
 		return this.query('realm/status', Object.assign(
-			realms && realms.constructor === 'string' ? { realms } : realms && realms.constructor === Array ? { realms: realms.join(',') } : {}, queryParams
+			realms && realms.constructor === String ? { realms } : realms && realms.constructor === Array ? { realms: realms.join(',') } : {}, queryParams
 		));
 	}
 
